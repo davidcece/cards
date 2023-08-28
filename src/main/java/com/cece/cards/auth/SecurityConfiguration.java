@@ -1,4 +1,4 @@
-package com.cece.cards.jwt;
+package com.cece.cards.auth;
 
 
 import lombok.RequiredArgsConstructor;

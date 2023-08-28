@@ -1,7 +1,8 @@
-package com.cece.cards.jwt;
+package com.cece.cards.auth;
 
 
 import com.cece.cards.datalayer.models.User;
+import com.cece.cards.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtUtil;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,
@@ -70,7 +72,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private UserDetails getUserDetails(String token) {
-        User userDetails = new User();
+        User userDetails = userService.loadUserByUsername(token);
         String[] jwtSubject = jwtUtil.getSubject(token).split(",");
 
         userDetails.setId(Integer.parseInt(jwtSubject[0]));

@@ -1,5 +1,7 @@
 # Copyright VMware, Inc.
 # SPDX-License-Identifier: APACHE-2.0
+# wsl -d docker-desktop
+# sysctl -w vm.max_map_count=262144
 
 version: '2'
 services:

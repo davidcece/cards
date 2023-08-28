@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/v1/cards")
@@ -23,13 +24,14 @@ public class CardApi {
 
     @GetMapping
     public List<CardResponse> getCards(@RequestParam int page, @RequestParam int pageSize) {
-        User user = (User) authentication.getPrincipal();
-        List<Card> cards;
-        if (user.isAdmin())
-            cards = cardService.getAllCards(page, pageSize);
-        else
-            cards = cardService.getUserCards(user.getId(), page, pageSize);
-        return responseFrom(cards);
+        // User user = (User) authentication.getPrincipal();
+        // List<Card> cards;
+        // if (user.isAdmin())
+        //     cards = cardService.getAllCards(page, pageSize);
+        // else
+        //     cards = cardService.getUserCards(user.getId(), page, pageSize);
+        // return responseFrom(cards);
+        return new ArrayList<CardResponse>();
     }
 
     @PostMapping

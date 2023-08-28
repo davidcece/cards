@@ -4,7 +4,7 @@ package com.cece.cards.api;
 import com.cece.cards.datalayer.models.User;
 import com.cece.cards.dto.requests.AuthRequest;
 import com.cece.cards.dto.responses.AuthResponse;
-import com.cece.cards.jwt.JwtTokenUtil;
+import com.cece.cards.auth.JwtTokenUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

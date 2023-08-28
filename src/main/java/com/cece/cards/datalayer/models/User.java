@@ -24,8 +24,6 @@ public class User implements UserDetails {
     private int id;
     private String email;
     private String password;
-    private String firstName;
-    private String lastName;
 
     @ManyToMany
     @JoinTable(name = "user_roles",
@@ -41,8 +39,6 @@ public class User implements UserDetails {
         return UserResponse.builder()
                 .id(id)
                 .email(email)
-                .firstName(firstName)
-                .lastName(lastName)
                 .build();
     }
 

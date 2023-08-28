@@ -1,4 +1,4 @@
-package com.cece.cards.jwt;
+package com.cece.cards.auth;
 
 import com.cece.cards.datalayer.models.User;
 import io.jsonwebtoken.*;
