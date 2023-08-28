@@ -8,6 +8,7 @@ import com.cece.cards.dto.responses.CardResponse;
 import com.cece.cards.services.CardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +17,13 @@ import java.util.List;
 @RequestMapping("/v1/cards")
 @RequiredArgsConstructor
 public class CardApi {
+
     private final CardService cardService;
+    private final AuthenticationManager authManager;
 
     @GetMapping
     public List<CardResponse> getCards(@RequestParam int page, @RequestParam int pageSize) {
-        User user = getUser();
+        User user = (User) authentication.getPrincipal();
         List<Card> cards;
         if (user.isAdmin())
             cards = cardService.getAllCards(page, pageSize);
@@ -42,7 +45,4 @@ public class CardApi {
         return cards.stream().map(Card::response).toList();
     }
 
-    private User getUser() {
-        return new User();
-    }
 }
