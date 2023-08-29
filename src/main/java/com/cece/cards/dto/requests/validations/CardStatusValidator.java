@@ -13,7 +13,9 @@ public class CardStatusValidator implements ConstraintValidator<CardStatus, Stri
 
     @Override
     public boolean isValid(String status, ConstraintValidatorContext context) {
-        List<String> validStatuses=List.of("To Do", "In Progress", "Done");
+        if (status == null)
+            return true;
+        List<String> validStatuses = List.of("To Do", "In Progress", "Done");
         return validStatuses.contains(status);
     }
 

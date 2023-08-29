@@ -31,16 +31,15 @@ public class SearchRequest {
     public List<Card> filterCards(List<Card> cards, int defaultPageNo, int defaultPageSize) {
         LocalDateTime startDate = getStartDate();
         LocalDateTime endDate = getEndDate();
-        long skip = getSkip(defaultPageNo,defaultPageSize);
+        long skip = getSkip(defaultPageNo, defaultPageSize);
 
-        cards = cards.parallelStream()
-                .filter(c -> name.isPresent() && name.get().equals(c.getName()))
-                .filter(c -> color.isPresent() && color.get().equals(c.getColor()))
-                .filter(c -> status.isPresent() && status.get().equals(c.getStatus()))
-                .filter(c -> startDate != null && startDate.isBefore(c.getCreatedAt()))
-                .filter(c -> endDate != null && endDate.isAfter(c.getCreatedAt()))
-                .sorted(getComparator())
-                .skip(skip).toList();
+        cards = cards.stream().filter(c -> name.isEmpty() || name.get().equals(c.getName())).toList();
+        cards = cards.stream().filter(c -> color.isEmpty() || color.get().equals(c.getColor())).toList();
+        cards = cards.stream().filter(c -> status.isEmpty() || status.get().equals(c.getStatus())).toList();
+        cards = cards.stream().filter(c -> startDate == null || startDate.isBefore(c.getCreatedAt())).toList();
+        cards = cards.stream().filter(c -> endDate == null || endDate.isAfter(c.getCreatedAt())).toList();
+        cards = cards.stream().sorted(getComparator()).toList();
+        cards = cards.stream().skip(skip).toList();
 
         //Do limit after filtering and sorting
         long take = getLimitOrDefault(defaultPageSize);
@@ -51,7 +50,7 @@ public class SearchRequest {
         if (page.isPresent() && pageSize.isPresent()) {
             return page.get() * pageSize.get();
         }
-        return defaultPageNo*defaultPageSize;
+        return defaultPageNo * defaultPageSize;
     }
 
     private long getLimitOrDefault(int defaultPageSize) {
@@ -92,11 +91,10 @@ public class SearchRequest {
     private LocalDateTime getEndDate() {
         if (toDate.isPresent()) {
             LocalDate localDate = LocalDate.parse(toDate.get(), formatter);
-            return localDate.atStartOfDay();
+            return localDate.atStartOfDay().plusDays(1);
         }
         return null;
     }
-
 
 
 }
