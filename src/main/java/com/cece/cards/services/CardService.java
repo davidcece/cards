@@ -120,7 +120,7 @@ public class CardService {
     }
 
     private boolean available(String item) {
-        return item != null && item.trim() != "";
+        return item != null && !item.trim().equals("");
     }
 
 

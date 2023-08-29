@@ -48,9 +48,9 @@ public class SearchRequest {
 
     private long getSkip(int defaultPageNo, int defaultPageSize) {
         if (page.isPresent() && pageSize.isPresent()) {
-            return page.get() * pageSize.get();
+            return (long) page.get() * pageSize.get();
         }
-        return defaultPageNo * defaultPageSize;
+        return (long) defaultPageNo * defaultPageSize;
     }
 
     private long getLimitOrDefault(int defaultPageSize) {
@@ -73,7 +73,7 @@ public class SearchRequest {
             };
         }
 
-        if (sortDescending.isPresent() && sortDescending.get()) {
+        if (sortDescending.isPresent() && Boolean.TRUE.equals(sortDescending.get())) {
             return comparator.reversed();
         }
         return comparator;

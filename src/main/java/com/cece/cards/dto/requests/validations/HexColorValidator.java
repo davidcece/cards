@@ -7,19 +7,20 @@ public class HexColorValidator implements ConstraintValidator<HexColor, String> 
 
     @Override
     public void initialize(HexColor constraintAnnotation) {
+        //Leave empty
     }
 
     @Override
     public boolean isValid(String color, ConstraintValidatorContext context) {
-        if(color==null || color.trim().length()==0)
+        if (color == null || color.trim().length() == 0)
             return true;
 
-        color=color.trim();
+        color = color.trim();
         if (color.length() != 4 && color.length() != 7) {
             return false;
         }
 
-        if(color.charAt(0)!='#')
+        if (color.charAt(0) != '#')
             return false;
 
         String allowedAlphaNumeric = "#0123456789abcdef";

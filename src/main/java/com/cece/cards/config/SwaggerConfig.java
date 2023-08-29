@@ -65,12 +65,14 @@ public class SwaggerConfig {
     }
 
     private String getDescription() {
-        return  "Cards Management service <br /> " +
+        String lineBreak = "<br />";
+        String password = ", password=";
+        return "Cards Management service <br /> " +
                 "Call /auth/login with below credentials to get a jwt token, " +
                 "click Authorize button to set the token received and start manipulating cards <br />" +
-                "1. Admin: username=" + adminUsername + ", password=" + adminPassword + "<br />" +
-                "2. Member1: username=" + member1Username + ", password=" + member1Password + "<br />" +
-                "3. Member2: username=" + member2Username + ", password=" + member2Password + "<br />";
+                "1. Admin: username=" + adminUsername + password + adminPassword + lineBreak +
+                "2. Member1: username=" + member1Username + password + member1Password + lineBreak +
+                "3. Member2: username=" + member2Username + password + member2Password + lineBreak;
     }
 
     private void addSecurity(OpenAPI openApi) {

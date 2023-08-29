@@ -6,4 +6,4 @@ mvn clean verify sonar:sonar \
   -Dsonar.projectKey=cards \
   -Dsonar.projectName='cards' \
   -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.token=sqp_15aab95ceca4ec0111cb45602f811b6b7aa2e6cb
+  -Dsonar.token=sqp_b10f665e0dc0cb4e696bad589e1671be32bdc36d

@@ -53,8 +53,8 @@ public class CardApi {
                     " or 7 characters eg #aa11ff, <br />" +
                     " status is one [To Do, In Progress, Done]")
     public ResponseEntity<CardResponse> updateCard(@PathVariable long id, @Valid @RequestBody UpdateCardRequest request, Principal principal) {
-        ResponseEntity<CardResponse> UNAUTHORIZED = validateUserAccess(id, principal);
-        if (UNAUTHORIZED != null) return UNAUTHORIZED;
+        ResponseEntity<CardResponse> unauthorized = validateUserAccess(id, principal);
+        if (unauthorized != null) return unauthorized;
 
         Card updatedCard = cardService.update(id, request);
         return ResponseEntity.ok().body(updatedCard.response());
@@ -62,8 +62,8 @@ public class CardApi {
 
     @DeleteMapping("{id}")
     public ResponseEntity<CardResponse> delete(@PathVariable long id, Principal principal) {
-        ResponseEntity<CardResponse> UNAUTHORIZED = validateUserAccess(id, principal);
-        if (UNAUTHORIZED != null) return UNAUTHORIZED;
+        ResponseEntity<CardResponse> unauthorized = validateUserAccess(id, principal);
+        if (unauthorized != null) return unauthorized;
 
         cardService.delete(id);
         return ResponseEntity.ok().build();
@@ -71,8 +71,8 @@ public class CardApi {
 
     @GetMapping("{id}")
     public ResponseEntity<CardResponse> getCard(@PathVariable long id, Principal principal) {
-        ResponseEntity<CardResponse> UNAUTHORIZED = validateUserAccess(id, principal);
-        if (UNAUTHORIZED != null) return UNAUTHORIZED;
+        ResponseEntity<CardResponse> unauthorized = validateUserAccess(id, principal);
+        if (unauthorized != null) return unauthorized;
 
         Card card = cardService.getCard(id);
         return ResponseEntity.ok().body(card.response());
@@ -99,7 +99,7 @@ public class CardApi {
         String username = principal.getName();
         User user = userService.getUserByEmail(username);
 
-        SearchRequest request=SearchRequest.builder()
+        SearchRequest request = SearchRequest.builder()
                 .name(name)
                 .color(color)
                 .status(status)

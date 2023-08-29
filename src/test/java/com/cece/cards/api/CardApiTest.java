@@ -248,6 +248,20 @@ class CardApiTest {
                 .andExpect(jsonPath("$.data[0].id").value(4));
     }
 
+    @Test
+    @Order(5)
+    @WithMockUser("admin@cards.com")
+    void canLimitResults() throws Exception {
+        int page = 1;
+        int size = 2;
+
+        String url = String.format("/v1/cards/search?page=%d&pageSize=%d", page, size);
+        mockMvc.perform(get(url))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data", hasSize(1)));
+    }
+
     CardRequest cardRequestValid() {
         return CardRequest.builder()
                 .name("Awesome Name")

@@ -9,6 +9,7 @@ public class CardStatusValidator implements ConstraintValidator<CardStatus, Stri
 
     @Override
     public void initialize(CardStatus constraintAnnotation) {
+        //Leave empty
     }
 
     @Override

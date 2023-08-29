@@ -1,7 +1,6 @@
 package com.cece.cards.auth;
 
 
-import com.cece.cards.datalayer.models.User;
 import com.cece.cards.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -68,8 +67,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private UserDetails getUserDetails(String token) {
         String[] jwtSubject = jwtUtil.getSubject(token).split(",");
-
-        User userDetails = (User) userService.loadUserByUsername(jwtSubject[1]);
-        return userDetails;
+        return userService.loadUserByUsername(jwtSubject[1]);
     }
 }

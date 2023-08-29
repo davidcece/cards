@@ -1,13 +1,13 @@
 package com.cece.cards.datalayer.models;
 
 
-import com.cece.cards.dto.responses.UserResponse;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 @Getter
@@ -36,17 +36,9 @@ public class User implements UserDetails {
         return roles.stream().anyMatch(r -> r.getName().equals("ADMIN"));
     }
 
-    public UserResponse response() {
-        return UserResponse.builder()
-                .id(id)
-                .email(email)
-                .build();
-    }
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
