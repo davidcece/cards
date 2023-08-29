@@ -20,6 +20,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -264,6 +267,20 @@ class CardApiTest {
 
     @Test
     @Order(5)
+    @WithMockUser("member2@cards.com")
+    void memberShouldSearchByStatusAndColor() throws Exception {
+        String status = "To Do";
+        String color = encodeURL("#ff1244");
+        String url = String.format("/v1/cards/search?status=%s&color=%s", status, color);
+
+        mockMvc.perform(get(url))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data", hasSize(1)));
+    }
+
+    @Test
+    @Order(5)
     @WithMockUser("admin@cards.com")
     void canLimitResults() throws Exception {
         int page = 1;
@@ -274,6 +291,10 @@ class CardApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data", hasSize(1)));
+    }
+
+    private String encodeURL(String value) throws UnsupportedEncodingException {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
     }
 
     CardRequest cardRequestValid() {

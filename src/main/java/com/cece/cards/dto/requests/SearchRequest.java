@@ -5,6 +5,9 @@ import com.cece.cards.datalayer.models.User;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +38,7 @@ public class SearchRequest {
 
         cards = cards.parallelStream()
                 .filter(c -> name.isEmpty() || name.get().equals(c.getName()))
-                .filter(c -> color.isEmpty() || color.get().equals(c.getColor()))
+                .filter(c -> color.isEmpty() || decodeColor().equals(c.getColor()))
                 .filter(c -> status.isEmpty() || status.get().equals(c.getStatus()))
                 .filter(c -> startDate == null || startDate.isBefore(c.getCreatedAt()))
                 .filter(c -> endDate == null || endDate.isAfter(c.getCreatedAt()))
@@ -45,6 +48,16 @@ public class SearchRequest {
         //Do limit after filtering and sorting
         long take = getLimitOrDefault(defaultPageSize);
         return cards.stream().limit(take).toList();
+    }
+
+    private String decodeColor() {
+        String cardColor = color.get();
+        try {
+            String c = URLDecoder.decode(cardColor, StandardCharsets.UTF_8.toString());
+            return c;
+        } catch (UnsupportedEncodingException e) {
+            return cardColor;
+        }
     }
 
     private long getSkip(int defaultPageNo, int defaultPageSize) {
