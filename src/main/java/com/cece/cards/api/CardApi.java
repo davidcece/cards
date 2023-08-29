@@ -23,7 +23,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/v1/cards")
 @RequiredArgsConstructor
-@CrossOrigin
 public class CardApi {
     private final CardService cardService;
     private final UserService userService;

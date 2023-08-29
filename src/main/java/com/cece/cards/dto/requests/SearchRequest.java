@@ -33,13 +33,14 @@ public class SearchRequest {
         LocalDateTime endDate = getEndDate();
         long skip = getSkip(defaultPageNo, defaultPageSize);
 
-        cards = cards.stream().filter(c -> name.isEmpty() || name.get().equals(c.getName())).toList();
-        cards = cards.stream().filter(c -> color.isEmpty() || color.get().equals(c.getColor())).toList();
-        cards = cards.stream().filter(c -> status.isEmpty() || status.get().equals(c.getStatus())).toList();
-        cards = cards.stream().filter(c -> startDate == null || startDate.isBefore(c.getCreatedAt())).toList();
-        cards = cards.stream().filter(c -> endDate == null || endDate.isAfter(c.getCreatedAt())).toList();
-        cards = cards.stream().sorted(getComparator()).toList();
-        cards = cards.stream().skip(skip).toList();
+        cards = cards.parallelStream()
+                .filter(c -> name.isEmpty() || name.get().equals(c.getName()))
+                .filter(c -> color.isEmpty() || color.get().equals(c.getColor()))
+                .filter(c -> status.isEmpty() || status.get().equals(c.getStatus()))
+                .filter(c -> startDate == null || startDate.isBefore(c.getCreatedAt()))
+                .filter(c -> endDate == null || endDate.isAfter(c.getCreatedAt()))
+                .sorted(getComparator())
+                .skip(skip).toList();
 
         //Do limit after filtering and sorting
         long take = getLimitOrDefault(defaultPageSize);
@@ -60,18 +61,14 @@ public class SearchRequest {
     }
 
     private Comparator<Card> getComparator() {
-        Comparator<Card> comparator;
-        if (sortBy.isEmpty())
-            comparator = Comparator.comparing(Card::getCreatedAt);
-        else {
-            comparator = switch (sortBy.get()) {
-                case "createdAt" -> Comparator.comparing(Card::getCreatedAt);
-                case "name" -> Comparator.comparing(Card::getName);
-                case "color" -> Comparator.comparing(Card::getColor);
-                case "status" -> Comparator.comparing(Card::getStatus);
-                default -> throw new IllegalStateException("Unexpected value: " + sortBy.get());
-            };
-        }
+        String column = sortBy.orElse("createdAt");
+        Comparator<Card> comparator = switch (column) {
+            case "createdAt" -> Comparator.comparing(Card::getCreatedAt);
+            case "name" -> Comparator.comparing(Card::getName);
+            case "color" -> Comparator.comparing(Card::getColor);
+            case "status" -> Comparator.comparing(Card::getStatus);
+            default -> throw new IllegalStateException("Unexpected value: " + column);
+        };
 
         if (sortDescending.isPresent() && Boolean.TRUE.equals(sortDescending.get())) {
             return comparator.reversed();

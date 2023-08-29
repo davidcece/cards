@@ -250,6 +250,20 @@ class CardApiTest {
 
     @Test
     @Order(5)
+    @WithMockUser("member2@cards.com")
+    void memberShouldHaveCardsSortedByDateDesc() throws Exception {
+        String sortBy = "createdAt";
+        String url = String.format("/v1/cards/search?sortBy=%s&sortDescending=%s", sortBy, true);
+
+        mockMvc.perform(get(url))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data", hasSize(2)))
+                .andExpect(jsonPath("$.data[0].id").value(4));
+    }
+
+    @Test
+    @Order(5)
     @WithMockUser("admin@cards.com")
     void canLimitResults() throws Exception {
         int page = 1;
