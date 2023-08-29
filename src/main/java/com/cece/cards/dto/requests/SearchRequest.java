@@ -5,7 +5,6 @@ import com.cece.cards.datalayer.models.User;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -52,12 +51,7 @@ public class SearchRequest {
 
     private String decodeColor() {
         String cardColor = color.get();
-        try {
-            String c = URLDecoder.decode(cardColor, StandardCharsets.UTF_8.toString());
-            return c;
-        } catch (UnsupportedEncodingException e) {
-            return cardColor;
-        }
+        return URLDecoder.decode(cardColor, StandardCharsets.UTF_8);
     }
 
     private long getSkip(int defaultPageNo, int defaultPageSize) {

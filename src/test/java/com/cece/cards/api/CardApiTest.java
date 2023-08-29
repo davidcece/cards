@@ -20,7 +20,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -293,8 +292,8 @@ class CardApiTest {
                 .andExpect(jsonPath("$.data", hasSize(1)));
     }
 
-    private String encodeURL(String value) throws UnsupportedEncodingException {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+    private String encodeURL(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
     CardRequest cardRequestValid() {
