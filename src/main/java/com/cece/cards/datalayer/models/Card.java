@@ -4,13 +4,15 @@ import com.cece.cards.dto.responses.CardResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "cards")
+@Table(name = "cards", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_id", "name" }) })
 public class Card {
 
     @Id
@@ -20,6 +22,8 @@ public class Card {
     private String description;
     private String color;
     private String status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -33,6 +37,8 @@ public class Card {
                 .color(color)
                 .status(status)
                 .userId(user.getId())
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
                 .build();
     }
 }

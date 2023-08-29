@@ -10,4 +10,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findAllByUserId(int userId, Pageable pageable);
 
     long countByUserId(int id);
+
+    Card findOneById(long id);
+
+    List<Card> findAllByUserId(int id);
 }

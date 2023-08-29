@@ -1,7 +1,7 @@
 package com.cece.cards.seeds;
 
 import com.cece.cards.datalayer.models.Role;
-import com.cece.cards.auth.Roles;
+import com.cece.cards.datalayer.models.Roles;
 import com.cece.cards.datalayer.models.User;
 import com.cece.cards.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,23 +24,23 @@ public class UserSeeder implements CommandLineRunner {
     @Value("${app.admin.password}")
     private String adminPassword;
 
-    @Value("${app.user1.username}")
-    private String user1Username;
-    @Value("${app.user1.password}")
-    private String user1Password;
+    @Value("${app.member1.username}")
+    private String member1Username;
+    @Value("${app.member1.password}")
+    private String member1Password;
 
-    @Value("${app.user2.username}")
-    private String user2Username;
-    @Value("${app.user2.password}")
-    private String user2Password;
+    @Value("${app.member2.username}")
+    private String member2Username;
+    @Value("${app.member2.password}")
+    private String member2Password;
 
     @Override
     public void run(String... args) {
         if(usersExists())
             return;
         createUser(Roles.ADMIN, adminUsername, adminPassword);
-        createUser(Roles.USER, user1Username, user1Password);
-        createUser(Roles.USER, user2Username, user2Password);
+        createUser(Roles.MEMBER, member1Username, member1Password);
+        createUser(Roles.MEMBER, member2Username, member2Password);
     }
 
     private boolean usersExists(){

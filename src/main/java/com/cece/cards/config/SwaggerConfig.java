@@ -20,15 +20,15 @@ public class SwaggerConfig {
     @Value("${app.admin.password}")
     private String adminPassword;
 
-    @Value("${app.user1.username}")
-    private String user1Username;
-    @Value("${app.user1.password}")
-    private String user1Password;
+    @Value("${app.member1.username}")
+    private String member1Username;
+    @Value("${app.member1.password}")
+    private String member1Password;
 
-    @Value("${app.user2.username}")
-    private String user2Username;
-    @Value("${app.user2.password}")
-    private String user2Password;
+    @Value("${app.member2.username}")
+    private String member2Username;
+    @Value("${app.member2.password}")
+    private String member2Password;
 
     private static final String API_VERSION = "1.0";
     private static final String API_TITLE = "Cards";
@@ -69,8 +69,8 @@ public class SwaggerConfig {
                 "Call /auth/login with below credentials to get a jwt token, " +
                 "click Authorize button to set the token received and start manipulating cards <br />" +
                 "1. Admin: username=" + adminUsername + ", password=" + adminPassword + "<br />" +
-                "2. User1: username=" + user1Username + ", password=" + user1Password + "<br />" +
-                "3. User2: username=" + user2Username + ", password=" + user2Password + "<br />";
+                "2. Member1: username=" + member1Username + ", password=" + member1Password + "<br />" +
+                "3. Member2: username=" + member2Username + ", password=" + member2Password + "<br />";
     }
 
     private void addSecurity(OpenAPI openApi) {
