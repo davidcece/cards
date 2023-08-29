@@ -5,46 +5,52 @@ import com.cece.cards.datalayer.models.Card;
 import com.cece.cards.datalayer.models.User;
 import com.cece.cards.dto.requests.CardRequest;
 import com.cece.cards.dto.responses.CardResponse;
+import com.cece.cards.dto.responses.PagedCardResponse;
 import com.cece.cards.services.CardService;
+import com.cece.cards.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/cards")
 @RequiredArgsConstructor
+@CrossOrigin
 public class CardApi {
-
     private final CardService cardService;
-    private final AuthenticationManager authManager;
+    private final UserService userService;
 
     @GetMapping
-    public List<CardResponse> getCards(@RequestParam int page, @RequestParam int pageSize) {
-        // User user = (User) authentication.getPrincipal();
-        // List<Card> cards;
-        // if (user.isAdmin())
-        //     cards = cardService.getAllCards(page, pageSize);
-        // else
-        //     cards = cardService.getUserCards(user.getId(), page, pageSize);
-        // return responseFrom(cards);
-        return new ArrayList<CardResponse>();
+    public PagedCardResponse getCards(@RequestParam Optional<Integer> page,
+                                      @RequestParam Optional<Integer> pageSize, Principal principal) {
+        String username = principal.getName();
+        User user = userService.getUserByEmail(username);
+        return cardService.getCards(user, page, pageSize);
     }
 
     @PostMapping
-    public CardResponse createCard(@Valid @RequestBody CardRequest request) {
-        Card postedCard = Card.builder()
+    @Operation(summary = "Create a card",
+            description = "Card name is required, description and color are optional," +
+                    " if color is provided, it must be a valid hex color starting with #, must have either 4 characters eg #a1f" +
+                    " or 7 characters eg #aa11ff")
+    public CardResponse createCard(@Valid @RequestBody CardRequest request, Principal principal) {
+        String username = principal.getName();
+        User user = userService.getUserByEmail(username);
 
+        Card postedCard = Card.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .color(request.getColor())
+                .user(user)
                 .build();
         Card savedCard = cardService.create(postedCard);
         return savedCard.response();
     }
 
-    private List<CardResponse> responseFrom(List<Card> cards) {
-        return cards.stream().map(Card::response).toList();
-    }
+
 
 }

@@ -1,23 +1,23 @@
 package com.cece.cards.dto.requests;
 
+import com.cece.cards.dto.requests.validations.HexColor;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Setter;
 
 @Builder
 @Setter
+@Getter
 public class CardRequest {
-    @NotNull(message = "validation.name.not_null")
-    @NotEmpty(message = "validation.name.not_empty")
+
+    @NotNull(message = "name should not be null")
+    @NotEmpty(message = "name should not be empty")
     private String name;
 
     private String description;
 
-    @Size.List({
-            @Size(min = 6, message = "{validation.color.size.too_short}"),
-            @Size(max = 6, message = "{validation.color.size.too_long}")
-    })
+    @HexColor
     private String color;
 }

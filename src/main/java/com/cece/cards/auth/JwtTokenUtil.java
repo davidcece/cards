@@ -15,13 +15,13 @@ import java.util.Date;
 public class JwtTokenUtil {
     private static final long EXPIRE_DURATION = Duration.ofHours(24).toMillis();
 
-    @Value("${app.jwt.secret}")
+    @Value("${app.jwt.secret-key}")
     private String secretKey;
 
     public String generateAccessToken(User user) {
         return Jwts.builder()
-                .setSubject(String.format("%s,%s", user.getId(), user.getEmail()))
-                .setIssuer("CodeJava")
+                .setSubject(String.format("%s,%s", user.getId(), user.getEmail() ))
+                .setIssuer("Cards")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
                 .signWith(SignatureAlgorithm.HS512, secretKey)

@@ -17,7 +17,10 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public Role createRole(Role role){
+    public Role createRoleIfNotExist(Role role){
+        Role existing=roleRepository.findByName(role.getName());
+        if(existing!=null)
+            return existing;
         return roleRepository.save(role);
     }
 
@@ -25,9 +28,17 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public long countAll() {
+        return userRepository.count();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return getUserByEmail(username);
     }
 }
