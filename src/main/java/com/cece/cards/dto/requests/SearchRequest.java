@@ -71,24 +71,19 @@ public class SearchRequest {
 
     private Predicate<Card> byStartDate() {
         LocalDateTime startDate;
-        if (fromDate.isPresent()) {
-            LocalDate localDate = LocalDate.parse(fromDate.get(), formatter);
-            startDate = localDate.atStartOfDay();
-        } else {
+        if (fromDate.isPresent())
+            startDate = LocalDate.parse(fromDate.get(), formatter).atStartOfDay();
+        else
             startDate = null;
-        }
-
         return card -> startDate == null || startDate.isBefore(card.getCreatedAt());
     }
 
     private Predicate<Card> byEndDate() {
         LocalDateTime endDate;
-        if (toDate.isPresent()) {
-            LocalDate localDate = LocalDate.parse(toDate.get(), formatter);
-            endDate = localDate.atStartOfDay().plusDays(1);
-        }else {
-            endDate=null;
-        }
+        if (toDate.isPresent())
+            endDate = LocalDate.parse(toDate.get(), formatter).atStartOfDay().plusDays(1);
+        else
+            endDate = null;
         return card -> endDate == null || endDate.isAfter(card.getCreatedAt());
     }
 
