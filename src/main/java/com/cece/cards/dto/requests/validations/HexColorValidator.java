@@ -23,8 +23,9 @@ public class HexColorValidator implements ConstraintValidator<HexColor, String> 
         if (color.charAt(0) != '#')
             return false;
 
-        String allowedAlphaNumeric = "#0123456789abcdef";
-        for (char c : color.toCharArray()) {
+        String validationColor=color.replace("#", "");
+        String allowedAlphaNumeric = "0123456789abcdef";
+        for (char c : validationColor.toCharArray()) {
             String currentChar = String.valueOf(c).toLowerCase();
             if (!allowedAlphaNumeric.contains(currentChar)) {
                 return false;
