@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Builder
 @Getter
@@ -31,41 +32,66 @@ public class SearchRequest {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public List<Card> filterCards(List<Card> cards, int defaultPageNo, int defaultPageSize) {
-        LocalDateTime startDate = getStartDate();
-        LocalDateTime endDate = getEndDate();
-        long skip = getSkip(defaultPageNo, defaultPageSize);
-
+        long skip = getItemsToSkip(defaultPageNo, defaultPageSize);
         cards = cards.parallelStream()
-                .filter(c -> name.isEmpty() || name.get().equals(c.getName()))
-                .filter(c -> color.isEmpty() || decodeColor().equals(c.getColor()))
-                .filter(c -> status.isEmpty() || status.get().equals(c.getStatus()))
-                .filter(c -> startDate == null || startDate.isBefore(c.getCreatedAt()))
-                .filter(c -> endDate == null || endDate.isAfter(c.getCreatedAt()))
+                .filter(byName())
+                .filter(byColor())
+                .filter(byStatus())
+                .filter(byStartDate())
+                .filter(byEndDate())
                 .sorted(getComparator())
-                .skip(skip).toList();
-
-        //Do limit after filtering and sorting
-        long take = getLimitOrDefault(defaultPageSize);
+                .skip(skip)
+                .toList();
+        int take = pageSize.orElse(defaultPageSize);
         return cards.stream().limit(take).toList();
     }
 
-    private String decodeColor() {
-        String cardColor = color.get();
-        return URLDecoder.decode(cardColor, StandardCharsets.UTF_8);
+    private long getItemsToSkip(int defaultPageNo, int defaultPageSize) {
+        int number = page.orElse(defaultPageNo);
+        int size = pageSize.orElse(defaultPageSize);
+        return (long) number * size;
     }
 
-    private long getSkip(int defaultPageNo, int defaultPageSize) {
-        if (page.isPresent() && pageSize.isPresent()) {
-            return (long) page.get() * pageSize.get();
+    private Predicate<Card> byName() {
+        return card -> name.isEmpty() || name.get().equals(card.getName());
+    }
+
+    private Predicate<Card> byColor() {
+        return card -> {
+            if (color.isEmpty())
+                return true;
+            String decodedColor = URLDecoder.decode(color.get(), StandardCharsets.UTF_8);
+            return decodedColor.equals(card.getColor());
+        };
+    }
+
+    private Predicate<Card> byStatus() {
+        return card -> status.isEmpty() || status.get().equals(card.getStatus());
+    }
+
+    private Predicate<Card> byStartDate() {
+        LocalDateTime startDate;
+        if (fromDate.isPresent()) {
+            LocalDate localDate = LocalDate.parse(fromDate.get(), formatter);
+            startDate = localDate.atStartOfDay();
+        } else {
+            startDate = null;
         }
-        return (long) defaultPageNo * defaultPageSize;
+
+        return card -> startDate == null || startDate.isBefore(card.getCreatedAt());
     }
 
-    private long getLimitOrDefault(int defaultPageSize) {
-        if (pageSize.isPresent())
-            return pageSize.get();
-        return defaultPageSize;
+    private Predicate<Card> byEndDate() {
+        LocalDateTime endDate;
+        if (toDate.isPresent()) {
+            LocalDate localDate = LocalDate.parse(toDate.get(), formatter);
+            endDate = localDate.atStartOfDay().plusDays(1);
+        }else {
+            endDate=null;
+        }
+        return card -> endDate == null || endDate.isAfter(card.getCreatedAt());
     }
+
 
     private Comparator<Card> getComparator() {
         String column = sortBy.orElse("createdAt");
@@ -82,23 +108,4 @@ public class SearchRequest {
         }
         return comparator;
     }
-
-
-    private LocalDateTime getStartDate() {
-        if (fromDate.isPresent()) {
-            LocalDate localDate = LocalDate.parse(fromDate.get(), formatter);
-            return localDate.atStartOfDay();
-        }
-        return null;
-    }
-
-    private LocalDateTime getEndDate() {
-        if (toDate.isPresent()) {
-            LocalDate localDate = LocalDate.parse(toDate.get(), formatter);
-            return localDate.atStartOfDay().plusDays(1);
-        }
-        return null;
-    }
-
-
 }
