@@ -74,7 +74,7 @@ public class SearchRequest {
             case "name" -> Comparator.comparing(Card::getName);
             case "color" -> Comparator.comparing(Card::getColor);
             case "status" -> Comparator.comparing(Card::getStatus);
-            default -> throw new IllegalStateException("Unexpected value: " + column);
+            default -> throw new IllegalStateException("Unexpected sortBy value: " + column);
         };
 
         if (sortDescending.isPresent() && Boolean.TRUE.equals(sortDescending.get())) {
