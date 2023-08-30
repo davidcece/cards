@@ -33,7 +33,8 @@ public class SearchRequest {
 
     public List<Card> filterCards(List<Card> cards, int defaultPageNo, int defaultPageSize) {
         long skip = getItemsToSkip(defaultPageNo, defaultPageSize);
-        cards = cards.parallelStream()
+        int limit = pageSize.orElse(defaultPageSize);
+        return cards.parallelStream()
                 .filter(byName())
                 .filter(byColor())
                 .filter(byStatus())
@@ -41,9 +42,8 @@ public class SearchRequest {
                 .filter(byEndDate())
                 .sorted(getComparator())
                 .skip(skip)
+                .limit(limit)
                 .toList();
-        int take = pageSize.orElse(defaultPageSize);
-        return cards.stream().limit(take).toList();
     }
 
     private long getItemsToSkip(int defaultPageNo, int defaultPageSize) {
