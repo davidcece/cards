@@ -27,7 +27,6 @@ import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -172,7 +171,6 @@ class CardApiTest {
         mockMvc.perform(put("/v1/cards/2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(updateCardRequestClearColorAndDescription())))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.color").isEmpty())
                 .andExpect(jsonPath("$.description").isEmpty());
@@ -269,7 +267,7 @@ class CardApiTest {
     @WithMockUser("member2@cards.com")
     void memberShouldSearchByStatusAndColor() throws Exception {
         String status = "To Do";
-        String color = encodeURL("#ff1244");
+        String color = URLEncoder.encode("#ff1244", StandardCharsets.UTF_8);
         String url = String.format("/v1/cards/search?status=%s&color=%s", status, color);
 
         mockMvc.perform(get(url))
@@ -290,10 +288,6 @@ class CardApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data", hasSize(1)));
-    }
-
-    private String encodeURL(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
     CardRequest cardRequestValid() {
